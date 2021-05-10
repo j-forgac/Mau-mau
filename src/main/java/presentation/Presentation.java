@@ -112,6 +112,6 @@ public class Presentation {
 				suit = 0;
 			}
 		}
-		return suit;
+		return --suit;
 	}
 }

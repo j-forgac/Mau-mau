@@ -67,9 +67,10 @@ public class Game {
 		while (winner == null){
 			actualPlayer = players.get(playerOnMove);
 			System.out.println("hraje: "+playerOnMove);
+			System.out.println(actualPlayer.cards.size());
 			System.out.println("barva je: "+suit);
 			presentation.drawCard(new Card(playedCardsDeck.get(playedCardsDeck.size() -1).getValue(),suit));
-			playedCard = actualPlayer.play(playerOnMove,new Card(playedCardsDeck.get(playedCardsDeck.size() -1).getValue(),suit), skippingActive, stockSevens);
+			playedCard = new Card(actualPlayer.play(playerOnMove,new Card(playedCardsDeck.get(playedCardsDeck.size() -1).getValue(),suit), skippingActive, stockSevens));
 			if(playedCard.getValue() == null){
 				System.out.print("Nemas kartu");
 				if ((playedCardsDeck.get(playedCardsDeck.size() - 1).getValue() == CardValue.SEVEN)) {
@@ -78,11 +79,16 @@ public class Game {
 				} else {
 					drawnCardsCount=1;
 				}
+
+				if(skippingActive){
+					skippingActive = false;
+				}
+
 				for(int x =0;x<drawnCardsCount;x++){
 					setDecks();
 					System.out.print("LIZNUL SI:");
 					presentation.drawCard(drawingDeck.get(drawingDeck.size()-1));
-					actualPlayer.drawCard(drawingDeck.get(drawingDeck.size()-1));
+					actualPlayer.drawCard(new Card(drawingDeck.get(drawingDeck.size()-1)));
 				}
 			} else {
 				switch (playedCard.getValue()) {
@@ -90,18 +96,21 @@ public class Game {
 					//case ACE -> playerOnMove--;
 					case EIGHT -> skippingActive = true;
 				}
-				playedCardsDeck.add(playedCard);
+
+				playedCardsDeck.add(new Card(playedCard));
+
+				if(playedCard.getValue() == CardValue.JACK){
+					suit = actualPlayer.chooseSuit();
+				} else {
+					suit = playedCardsDeck.get(playedCardsDeck.size()-1).getSuit();
+				}
+				if(actualPlayer.didWin() && playedCard.getValue() != CardValue.ACE){
+					winner = actualPlayer;
+				}
 			}
 
 
-			if(playedCard.getValue() == CardValue.JACK){
-				suit = actualPlayer.chooseSuit();
-			} else {
-				suit = playedCardsDeck.get(playedCardsDeck.size()-1).getSuit();
-			}
-			if(actualPlayer.didWin() && playedCard.getValue() != CardValue.ACE){
-				winner = actualPlayer;
-			}
+
 			playerOnMove = (playerOnMove+1)%players.size();
 		}
 		System.out.println("PLAYER " + playerOnMove);
@@ -118,7 +127,7 @@ public class Game {
 	public void setDecks(){
 		if(drawingDeck.isEmpty()){
 			for(int x = playedCardsDeck.size() - 2; x > 0; x--){
-				drawingDeck.add(playedCardsDeck.get(x));
+				drawingDeck.add(new Card(playedCardsDeck.get(x)));
 				playedCardsDeck.remove(x);
 			}
 		}

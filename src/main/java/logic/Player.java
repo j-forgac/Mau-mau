@@ -65,17 +65,19 @@ public class Player {
 	}
 
 	public Card chooseCard(CardValue value, CardSuit suit){
-		System.out.println("value: " + value +": suit: " + suit);
+		//System.out.println("value: " + value +": suit: " + suit);
 		for(int x= 0;x< cards.size();x++){
-			System.out.println("1value: " + cards.get(x).getValue() +": 1suit: " + cards.get(x).getSuit());
+			//System.out.println("1value: " + cards.get(x).getValue() +": 1suit: " + cards.get(x).getSuit());
 			if(cards.get(x).getValue() == value || cards.get(x).getSuit() == suit){
 				playCard = new Card(cards.get(x));
 				if(type){
 					cards.remove(x);
 				}
+				presentation.drawCard(playCard);
 				return playCard;
 			}
 		}
+		System.out.println("sem jsem se nemel dostat");
 		playCard = new Card(null,null);
 		return playCard;
 	}
@@ -115,13 +117,13 @@ public class Player {
 
 	public Card humanTurn() {
 		presentation.drawPlayerView(cards);
-		if(aiTurn() == null){
+		if(aiTurn().getSuit() == null){
+			System.out.println("Lížeš si");
+			playCard = new Card(null,null);
+		} else {
 			int pos = presentation.getCardFromUser(cards);
 			playCard = new Card(cards.get(pos));
 			cards.remove(pos);
-		} else {
-			System.out.println("Lížeš si");
-			playCard = new Card(null,null);
 		}
 		return playCard;
 	}
