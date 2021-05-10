@@ -25,8 +25,9 @@ public class Presentation {
 	}
 
 	public void aiDraw(int id, Card card) {
-		System.out.println("Player " + id + "played: ");
+		System.out.println("Player " + id + " played: ");
 		drawCard(card);
+		System.out.println("");
 	}
 
 	public void drawCard(Card card) {
@@ -98,12 +99,12 @@ public class Presentation {
 		System.out.println("Choose suit which will be next card played on: ");
 		for(CardSuit suit: CardSuit.values()){
 			x++;
-			System.out.println(x+": ");
+			System.out.print(x+": ");
 			drawSuit(suit);
+			System.out.println("");
 		}
 		int suit = 0;
 		Scanner sc = new Scanner(System.in);
-		ArrayList<Boolean> players = new ArrayList<>();
 		while (suit < 1 || suit > 4) {
 			System.out.println("Enter number of suit: ");
 			try {

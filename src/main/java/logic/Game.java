@@ -7,7 +7,7 @@ import java.util.*;
 public class Game {
 
 	//-------------------Players-&-Game-Cycle-Data---
-	HashMap<Integer,Player> players = new HashMap<>();
+	HashMap<Integer, Player> players = new HashMap<>();
 	Player actualPlayer;
 	Player winner = null;
 	Card playedCard;
@@ -29,66 +29,58 @@ public class Game {
 	ArrayList<Boolean> userInput;
 
 
-	public Game(){
+	public Game() {
 		userInput = presentation.getPlayers();
-		System.out.println("TEST");
-
 		createDeck();
 		Collections.shuffle(drawingDeck);
-		for(Card card: drawingDeck){
-			presentation.drawCard(card);
-		}
 
 		int y = 0;
-		for (int i =0;i< userInput.size();i++){
-			for(int x = 0; x < 4;x++){
-				System.out.println(x + " : " + y);
-				presentation.drawCard(drawingDeck.get(x+y));
-				cards.add(new Card(drawingDeck.get(x+y)));
-				drawingDeck.remove(x+y);
+		for (int i = 0; i < userInput.size(); i++) {
+			for (int x = 0; x < 4; x++) {
+				cards.add(new Card(drawingDeck.get(x + y)));
+				drawingDeck.remove(x + y);
 			}
 			y += 4;
-			players.put(i,new Player(userInput.get(i), (ArrayList<Card>)cards.clone()));
+			players.put(i, new Player(userInput.get(i), (ArrayList<Card>) cards.clone()));
 			cards.clear();
 		}
 
 		initGame();
 	}
 
-	public void initGame(){
+	public void initGame() {
 		int playerOnMove = 0;
 
-		playedCardsDeck.add(new Card(drawingDeck.get(drawingDeck.size()-1)));
-		drawingDeck.remove(drawingDeck.size()-1);
-		suit = playedCardsDeck.get(playedCardsDeck.size()-1).getSuit();
-		System.out.println("barva je: "+suit);
+		playedCardsDeck.add(new Card(drawingDeck.get(drawingDeck.size() - 1)));
+		drawingDeck.remove(drawingDeck.size() - 1);
+		suit = playedCardsDeck.get(playedCardsDeck.size() - 1).getSuit();
 
 
-		while (winner == null){
+		while (winner == null) {
 			actualPlayer = players.get(playerOnMove);
-			System.out.println("hraje: "+playerOnMove);
-			System.out.println(actualPlayer.cards.size());
-			System.out.println("barva je: "+suit);
-			presentation.drawCard(new Card(playedCardsDeck.get(playedCardsDeck.size() -1).getValue(),suit));
-			playedCard = new Card(actualPlayer.play(playerOnMove,new Card(playedCardsDeck.get(playedCardsDeck.size() -1).getValue(),suit), skippingActive, stockSevens));
-			if(playedCard.getValue() == null){
-				System.out.print("Nemas kartu");
+			System.out.println("It's player's " + playerOnMove + " turn");
+			System.out.println("Topmost card: ");
+			presentation.drawCard(new Card(playedCardsDeck.get(playedCardsDeck.size() - 1).getValue(), suit));
+			System.out.println("");
+			playedCard = new Card(actualPlayer.play(playerOnMove, new Card(playedCardsDeck.get(playedCardsDeck.size() - 1).getValue(), suit), skippingActive, stockSevens));
+			if (playedCard.getValue() == null) {
 				if ((playedCardsDeck.get(playedCardsDeck.size() - 1).getValue() == CardValue.SEVEN)) {
-					drawnCardsCount=stockSevens;
+					drawnCardsCount = stockSevens;
 					stockSevens = 0;
 				} else {
-					drawnCardsCount=1;
+					drawnCardsCount = 1;
 				}
 
-				if(skippingActive){
+				if (skippingActive) {
 					skippingActive = false;
 				}
 
-				for(int x =0;x<drawnCardsCount;x++){
+				for (int x = 0; x < drawnCardsCount; x++) {
 					setDecks();
-					System.out.print("LIZNUL SI:");
-					presentation.drawCard(drawingDeck.get(drawingDeck.size()-1));
-					actualPlayer.drawCard(new Card(drawingDeck.get(drawingDeck.size()-1)));
+					System.out.println("Draw card:");
+					presentation.drawCard(drawingDeck.get(drawingDeck.size() - 1));
+					System.out.println("");
+					actualPlayer.drawCard(new Card(drawingDeck.get(drawingDeck.size() - 1)));
 				}
 			} else {
 				switch (playedCard.getValue()) {
@@ -99,36 +91,35 @@ public class Game {
 
 				playedCardsDeck.add(new Card(playedCard));
 
-				if(playedCard.getValue() == CardValue.JACK){
+				if (playedCard.getValue() == CardValue.JACK) {
 					suit = actualPlayer.chooseSuit();
 					stockSevens = 0;
 					skippingActive = false;
 				} else {
-					suit = playedCardsDeck.get(playedCardsDeck.size()-1).getSuit();
+					suit = playedCardsDeck.get(playedCardsDeck.size() - 1).getSuit();
 				}
-				if(actualPlayer.didWin() && playedCard.getValue() != CardValue.ACE){
+				if (actualPlayer.didWin() && playedCard.getValue() != CardValue.ACE) {
 					winner = actualPlayer;
 				}
 			}
 
 
-
-			playerOnMove = (playerOnMove+1)%players.size();
+			playerOnMove = (playerOnMove + 1) % players.size();
 		}
-		System.out.println("PLAYER " + playerOnMove);
+		System.out.println("PLAYER " + playerOnMove + " IS WINNER");
 	}
 
-	public void createDeck(){
-		for(CardSuit suit: CardSuit.values()){
-			for(CardValue value: CardValue.values()){
+	public void createDeck() {
+		for (CardSuit suit : CardSuit.values()) {
+			for (CardValue value : CardValue.values()) {
 				drawingDeck.add(new Card(value, suit));
 			}
 		}
 	}
 
-	public void setDecks(){
-		if(drawingDeck.isEmpty()){
-			for(int x = playedCardsDeck.size() - 2; x > 0; x--){
+	public void setDecks() {
+		if (drawingDeck.isEmpty()) {
+			for (int x = playedCardsDeck.size() - 2; x > 0; x--) {
 				drawingDeck.add(new Card(playedCardsDeck.get(x)));
 				playedCardsDeck.remove(x);
 			}

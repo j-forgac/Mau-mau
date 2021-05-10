@@ -1,21 +1,19 @@
-presentation/Presentation.java
- presentation.Presentation
- presentation.Presentation$1
+presentation/Colors.java
+ presentation.Colors
 logic/Card.java
  logic.Card
 logic/CardSuit.java
  logic.CardSuit
 logic/CardValue.java
  logic.CardValue
-presentation/Colors.java
- presentation.Colors
-logic/Executor.java
- logic.Executor
+presentation/Presentation.java
+ presentation.Presentation
+ presentation.Presentation$1
 logic/Player.java
  logic.Player
  logic.Player$1
-logic/Test.java
- logic.Test
+logic/Executor.java
+ logic.Executor
 logic/Game.java
  logic.Game
  logic.Game$1

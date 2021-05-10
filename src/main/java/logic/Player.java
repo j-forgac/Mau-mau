@@ -26,12 +26,9 @@ public class Player {
 		this.lastCard = lastCard;
 		this.skipping = skipping;
 		this.stocking = stocking;
-		System.out.println(type);
 		if (type) {
 			Card chosenCard = aiTurn();
-			if (chosenCard.getSuit() == null) {
-				System.out.println("Líže si");
-			} else {
+			if (chosenCard.getSuit() != null) {
 				presentation.aiDraw(id, chosenCard);
 			}
 			return chosenCard;
@@ -90,15 +87,12 @@ public class Player {
 	}
 
 	public Card chooseCardAi(CardValue value, CardSuit suit) {
-		//System.out.println("value: " + value +": suit: " + suit);
 		for (int x = 0; x < cards.size(); x++) {
-			//System.out.println("1value: " + cards.get(x).getValue() +": 1suit: " + cards.get(x).getSuit());
 			if (cards.get(x).getValue() == value || cards.get(x).getSuit() == suit || cards.get(x).getValue() == CardValue.JACK) {
 				playCard = new Card(cards.get(x));
 				if (type) {
 					cards.remove(x);
 				}
-				presentation.drawCard(playCard);
 				return playCard;
 			}
 		}
@@ -127,7 +121,6 @@ public class Player {
 				val = cardsPerSuit[x];
 			}
 		}
-		System.out.println(order);
 		return CardSuit.values()[order];
 	}
 
@@ -143,7 +136,6 @@ public class Player {
 		presentation.drawPlayerView(cards);
 		boolean validPos = false;
 		if (aiTurn().getSuit() == null) {
-			System.out.println("Lížeš si");
 			playCard = new Card(null, null);
 		} else {
 			int pos = -1;
