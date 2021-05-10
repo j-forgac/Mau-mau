@@ -17,7 +17,7 @@ public class Game {
 
 	ArrayList<Card> cards = new ArrayList<>();
 
-	int stockSevens;
+	int stackSevens;
 	boolean skippingActive = false;
 
 	//-------------------Decks----------------------
@@ -55,18 +55,14 @@ public class Game {
 		drawingDeck.remove(drawingDeck.size() - 1);
 		suit = playedCardsDeck.get(playedCardsDeck.size() - 1).getSuit();
 
-
 		while (winner == null) {
 			actualPlayer = players.get(playerOnMove);
-			System.out.println("It's player's " + playerOnMove + " turn");
-			System.out.println("Topmost card: ");
-			presentation.drawCard(new Card(playedCardsDeck.get(playedCardsDeck.size() - 1).getValue(), suit));
-			System.out.println("");
-			playedCard = new Card(actualPlayer.play(playerOnMove, new Card(playedCardsDeck.get(playedCardsDeck.size() - 1).getValue(), suit), skippingActive, stockSevens));
+			presentation.print1(playerOnMove, new Card(playedCardsDeck.get(playedCardsDeck.size() - 1).getValue(), suit));
+			playedCard = new Card(actualPlayer.play(playerOnMove, new Card(playedCardsDeck.get(playedCardsDeck.size() - 1).getValue(), suit), skippingActive, stackSevens));
 			if (playedCard.getValue() == null) {
 				if ((playedCardsDeck.get(playedCardsDeck.size() - 1).getValue() == CardValue.SEVEN)) {
-					drawnCardsCount = stockSevens;
-					stockSevens = 0;
+					drawnCardsCount = stackSevens;
+					stackSevens = 0;
 				} else {
 					drawnCardsCount = 1;
 				}
@@ -77,14 +73,12 @@ public class Game {
 
 				for (int x = 0; x < drawnCardsCount; x++) {
 					setDecks();
-					System.out.println("Draw card:");
-					presentation.drawCard(drawingDeck.get(drawingDeck.size() - 1));
-					System.out.println("");
+					presentation.print2(drawingDeck.get(drawingDeck.size() - 1));
 					actualPlayer.drawCard(new Card(drawingDeck.get(drawingDeck.size() - 1)));
 				}
 			} else {
 				switch (playedCard.getValue()) {
-					case SEVEN -> stockSevens += 2;
+					case SEVEN -> stackSevens += 2;
 					case ACE -> playerOnMove--;
 					case EIGHT -> skippingActive = true;
 				}
@@ -93,7 +87,7 @@ public class Game {
 
 				if (playedCard.getValue() == CardValue.JACK) {
 					suit = actualPlayer.chooseSuit();
-					stockSevens = 0;
+					stackSevens = 0;
 					skippingActive = false;
 				} else {
 					suit = playedCardsDeck.get(playedCardsDeck.size() - 1).getSuit();
@@ -106,7 +100,8 @@ public class Game {
 
 			playerOnMove = (playerOnMove + 1) % players.size();
 		}
-		System.out.println("PLAYER " + playerOnMove + " IS WINNER");
+
+		presentation.print3(playerOnMove);
 	}
 
 	public void createDeck() {

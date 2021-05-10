@@ -31,13 +31,13 @@ public class Presentation {
 	}
 
 	public void drawCard(Card card) {
-		switch (card.getValue()) {
-			case SEVEN -> System.out.print(" 7");
-			case EIGHT -> System.out.print(" 8");
-			case NINE -> System.out.print(" 9");
-			case TEN -> System.out.print("10");
-			default -> System.out.print(" " + card.getValue().toString().charAt(0));
-		}
+		System.out.print(switch (card.getValue()) {
+			case SEVEN -> " 7";
+			case EIGHT -> " 8";
+			case NINE -> " 9";
+			case TEN -> "10";
+			default -> " " + card.getValue().toString().charAt(0);
+		});
 		drawSuit(card.getSuit());
 	}
 
@@ -114,5 +114,22 @@ public class Presentation {
 			}
 		}
 		return --suit;
+	}
+
+	public void print1(int playerOnMove, Card card){
+		System.out.println("It's player's " + playerOnMove + " turn");
+		System.out.println("Topmost card: ");
+		drawCard(card);
+		System.out.println("");
+	}
+
+	public void print2(Card card){
+		System.out.println("Draw card:");
+		drawCard(card);
+		System.out.println("");
+	}
+
+	public void print3(int playerOnMove){
+		System.out.println("PLAYER " + playerOnMove + " IS WINNER");
 	}
 }

@@ -6,14 +6,14 @@ logic/CardSuit.java
  logic.CardSuit
 logic/CardValue.java
  logic.CardValue
-presentation/Presentation.java
- presentation.Presentation
- presentation.Presentation$1
+logic/Executor.java
+ logic.Executor
 logic/Player.java
  logic.Player
  logic.Player$1
-logic/Executor.java
- logic.Executor
+presentation/Presentation.java
+ presentation.Presentation
+ presentation.Presentation$1
 logic/Game.java
  logic.Game
  logic.Game$1

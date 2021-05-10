@@ -11,7 +11,7 @@ public class Player {
 	Card playCard;
 
 
-	int stocking;
+	int stacking;
 	boolean skipping;
 
 	Presentation presentation = new Presentation();
@@ -25,7 +25,7 @@ public class Player {
 	public Card play(int id, Card lastCard, boolean skipping, int stocking) {
 		this.lastCard = lastCard;
 		this.skipping = skipping;
-		this.stocking = stocking;
+		this.stacking = stocking;
 		if (type) {
 			Card chosenCard = aiTurn();
 			if (chosenCard.getSuit() != null) {
@@ -43,20 +43,8 @@ public class Player {
 
 	public Card aiTurn() {
 		return switch (lastCard.getValue()) {
-			case SEVEN -> {
-				if (stocking == 0) {
-					yield chooseCardAi(CardValue.SEVEN, lastCard.getSuit());
-				} else {
-					yield chooseCardAi(CardValue.SEVEN, null);
-				}
-			}
-			case EIGHT -> {
-				if (skipping) {
-					yield chooseCardAi(CardValue.EIGHT, null);
-				} else {
-					yield chooseCardAi(CardValue.EIGHT, lastCard.getSuit());
-				}
-			}
+			case SEVEN -> chooseCardAi(CardValue.SEVEN, stacking == 0? lastCard.getSuit():null);
+			case EIGHT -> chooseCardAi(CardValue.EIGHT, skipping? null:lastCard.getSuit());
 			default -> chooseCardAi(lastCard.getValue(), lastCard.getSuit());
 		};
 	}
@@ -69,7 +57,7 @@ public class Player {
 		}
 		return switch (lastCard.getValue()) {
 			case SEVEN -> {
-				if (stocking == 0) {
+				if (stacking == 0) {
 					yield suitSame || valueSame;
 				} else {
 					yield valueSame;
