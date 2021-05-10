@@ -93,7 +93,7 @@ public class Game {
 			} else {
 				switch (playedCard.getValue()) {
 					case SEVEN -> stockSevens += 2;
-					//case ACE -> playerOnMove--;
+					case ACE -> playerOnMove--;
 					case EIGHT -> skippingActive = true;
 				}
 
@@ -101,6 +101,8 @@ public class Game {
 
 				if(playedCard.getValue() == CardValue.JACK){
 					suit = actualPlayer.chooseSuit();
+					stockSevens = 0;
+					skippingActive = false;
 				} else {
 					suit = playedCardsDeck.get(playedCardsDeck.size()-1).getSuit();
 				}

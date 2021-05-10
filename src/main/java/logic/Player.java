@@ -29,10 +29,10 @@ public class Player {
 		System.out.println(type);
 		if (type) {
 			Card chosenCard = aiTurn();
-			if(chosenCard.getSuit() == null){
+			if (chosenCard.getSuit() == null) {
 				System.out.println("Líže si");
 			} else {
-				presentation.aiDraw(id,chosenCard);
+				presentation.aiDraw(id, chosenCard);
 			}
 			return chosenCard;
 		} else {
@@ -47,58 +47,82 @@ public class Player {
 	public Card aiTurn() {
 		return switch (lastCard.getValue()) {
 			case SEVEN -> {
-				if(stocking == 0){
-					yield chooseCard(CardValue.SEVEN, lastCard.getSuit());
+				if (stocking == 0) {
+					yield chooseCardAi(CardValue.SEVEN, lastCard.getSuit());
 				} else {
-					yield chooseCard(CardValue.SEVEN, null);
+					yield chooseCardAi(CardValue.SEVEN, null);
 				}
 			}
 			case EIGHT -> {
-				if(skipping){
-					yield chooseCard(CardValue.EIGHT, null);
+				if (skipping) {
+					yield chooseCardAi(CardValue.EIGHT, null);
 				} else {
-					yield chooseCard(CardValue.EIGHT, lastCard.getSuit());
+					yield chooseCardAi(CardValue.EIGHT, lastCard.getSuit());
 				}
 			}
-			default -> chooseCard(lastCard.getValue(), lastCard.getSuit());
+			default -> chooseCardAi(lastCard.getValue(), lastCard.getSuit());
 		};
 	}
 
-	public Card chooseCard(CardValue value, CardSuit suit){
+	public boolean valid(Card checkedCard){
+		boolean suitSame = checkedCard.getSuit() == lastCard.getSuit();
+		boolean valueSame = checkedCard.getValue() == lastCard.getValue();
+		if(checkedCard.getValue() == CardValue.JACK){
+			return true;
+		}
+		return switch (lastCard.getValue()) {
+			case SEVEN -> {
+				if (stocking == 0) {
+					yield suitSame || valueSame;
+				} else {
+					yield valueSame;
+				}
+			}
+			case EIGHT -> {
+				if (skipping) {
+					yield valueSame;
+				} else {
+					yield suitSame || valueSame;
+				}
+			}
+			default -> suitSame || valueSame;
+		};
+	}
+
+	public Card chooseCardAi(CardValue value, CardSuit suit) {
 		//System.out.println("value: " + value +": suit: " + suit);
-		for(int x= 0;x< cards.size();x++){
+		for (int x = 0; x < cards.size(); x++) {
 			//System.out.println("1value: " + cards.get(x).getValue() +": 1suit: " + cards.get(x).getSuit());
-			if(cards.get(x).getValue() == value || cards.get(x).getSuit() == suit){
+			if (cards.get(x).getValue() == value || cards.get(x).getSuit() == suit || cards.get(x).getValue() == CardValue.JACK) {
 				playCard = new Card(cards.get(x));
-				if(type){
+				if (type) {
 					cards.remove(x);
 				}
 				presentation.drawCard(playCard);
 				return playCard;
 			}
 		}
-		System.out.println("sem jsem se nemel dostat");
-		playCard = new Card(null,null);
+		playCard = new Card(null, null);
 		return playCard;
 	}
 
-	public CardSuit chooseSuit(){
-		if(type){
+	public CardSuit chooseSuit() {
+		if (type) {
 			return aiSuit();
 		} else {
 			return humanSuit();
 		}
 	}
 
-	public CardSuit aiSuit(){
+	public CardSuit aiSuit() {
 		int[] cardsPerSuit = new int[4];
-		for(CardSuit suit: CardSuit.values()){
+		for (CardSuit suit : CardSuit.values()) {
 			cardsPerSuit[suit.ordinal()]++;
 		}
 		int order = 0;
 		int val = 0;
-		for(int x = 0; x<cardsPerSuit.length;x++){
-			if(cardsPerSuit[x] > val){
+		for (int x = 0; x < cardsPerSuit.length; x++) {
+			if (cardsPerSuit[x] > val) {
 				order = x;
 				val = cardsPerSuit[x];
 			}
@@ -107,22 +131,29 @@ public class Player {
 		return CardSuit.values()[order];
 	}
 
-	public CardSuit humanSuit(){
+	public CardSuit humanSuit() {
 		return CardSuit.values()[presentation.getSuit()];
 	}
 
-	public void drawCard(Card card){
+	public void drawCard(Card card) {
 		cards.add(card);
 	}
 
 	public Card humanTurn() {
 		presentation.drawPlayerView(cards);
-		if(aiTurn().getSuit() == null){
+		boolean validPos = false;
+		if (aiTurn().getSuit() == null) {
 			System.out.println("Lížeš si");
-			playCard = new Card(null,null);
+			playCard = new Card(null, null);
 		} else {
-			int pos = presentation.getCardFromUser(cards);
-			playCard = new Card(cards.get(pos));
+			int pos = -1;
+			while (!validPos){
+				pos = presentation.getCardFromUser(cards);
+				playCard = new Card(cards.get(pos));
+				if(valid(playCard)){
+					validPos = true;
+				}
+			}
 			cards.remove(pos);
 		}
 		return playCard;
